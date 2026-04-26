@@ -18,7 +18,15 @@ if (!$place) {
     die("Place not found.");
 }
 
-$message = '';
+/* Get existing extra images */
+$extra_images = ['', '', ''];
+$image_result = mysqli_query($conn, "SELECT * FROM place_images WHERE place_id = $id ORDER BY id ASC LIMIT 3");
+
+$i = 0;
+while ($img = mysqli_fetch_assoc($image_result)) {
+    $extra_images[$i] = $img['image_path'];
+    $i++;
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
@@ -27,6 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $distance = mysqli_real_escape_string($conn, $_POST['distance']);
     $opening_hours = mysqli_real_escape_string($conn, $_POST['opening_hours']);
     $image = mysqli_real_escape_string($conn, $_POST['image']);
+    $extra_image1 = mysqli_real_escape_string($conn, $_POST['extra_image1']);
+    $extra_image2 = mysqli_real_escape_string($conn, $_POST['extra_image2']);
+    $extra_image3 = mysqli_real_escape_string($conn, $_POST['extra_image3']);
     $map_link = mysqli_real_escape_string($conn, $_POST['map_link']);
     $popularity = mysqli_real_escape_string($conn, $_POST['popularity']);
 
@@ -41,6 +52,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         popularity='$popularity'
         WHERE id=$id
     ");
+
+    /* Replace old extra images with new ones */
+    mysqli_query($conn, "DELETE FROM place_images WHERE place_id = $id");
+
+    if ($extra_image1 != '') {
+        mysqli_query($conn, "INSERT INTO place_images (place_id, image_path) VALUES ($id, '$extra_image1')");
+    }
+
+    if ($extra_image2 != '') {
+        mysqli_query($conn, "INSERT INTO place_images (place_id, image_path) VALUES ($id, '$extra_image2')");
+    }
+
+    if ($extra_image3 != '') {
+        mysqli_query($conn, "INSERT INTO place_images (place_id, image_path) VALUES ($id, '$extra_image3')");
+    }
 
     header("Location: admin_dashboard.php");
     exit();
@@ -80,8 +106,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label>Opening Hours</label>
             <input type="text" name="opening_hours" value="<?php echo htmlspecialchars($place['opening_hours']); ?>">
 
-            <label>Image URL</label>
+            <label>Main Image URL</label>
             <input type="text" name="image" value="<?php echo htmlspecialchars($place['image']); ?>" required>
+
+            <label>Extra Image 1</label>
+            <input type="text" name="extra_image1" value="<?php echo htmlspecialchars($extra_images[0]); ?>">
+
+            <label>Extra Image 2</label>
+            <input type="text" name="extra_image2" value="<?php echo htmlspecialchars($extra_images[1]); ?>">
+
+            <label>Extra Image 3</label>
+            <input type="text" name="extra_image3" value="<?php echo htmlspecialchars($extra_images[2]); ?>">
 
             <label>Google Map Link</label>
             <input type="text" name="map_link" value="<?php echo htmlspecialchars($place['map_link']); ?>" required>

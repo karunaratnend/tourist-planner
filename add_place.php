@@ -15,11 +15,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $distance = mysqli_real_escape_string($conn, $_POST['distance']);
     $opening_hours = mysqli_real_escape_string($conn, $_POST['opening_hours']);
     $image = mysqli_real_escape_string($conn, $_POST['image']);
+    $extra_image1 = mysqli_real_escape_string($conn, $_POST['extra_image1']);
+    $extra_image2 = mysqli_real_escape_string($conn, $_POST['extra_image2']);
+    $extra_image3 = mysqli_real_escape_string($conn, $_POST['extra_image3']);
     $map_link = mysqli_real_escape_string($conn, $_POST['map_link']);
     $popularity = mysqli_real_escape_string($conn, $_POST['popularity']);
 
     mysqli_query($conn, "INSERT INTO places (name, category, description, distance, opening_hours, image, map_link, popularity)
     VALUES ('$name', '$category', '$description', '$distance', '$opening_hours', '$image', '$map_link', '$popularity')");
+
+    $place_id = mysqli_insert_id($conn);
+
+    if ($extra_image1 != '') {
+        mysqli_query($conn, "INSERT INTO place_images (place_id, image_path) VALUES ($place_id, '$extra_image1')");
+    }
+
+    if ($extra_image2 != '') {
+        mysqli_query($conn, "INSERT INTO place_images (place_id, image_path) VALUES ($place_id, '$extra_image2')");
+    }
+
+    if ($extra_image3 != '') {
+        mysqli_query($conn, "INSERT INTO place_images (place_id, image_path) VALUES ($place_id, '$extra_image3')");
+    }
 
     $message = "Place added successfully.";
 }
@@ -62,8 +79,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label>Opening Hours</label>
             <input type="text" name="opening_hours">
 
-            <label>Image URL</label>
-            <input type="text" name="image" required>
+            <label>Main Image URL</label>
+            <input type="text" name="image" placeholder="images/place.jpg" required>
+
+            <label>Extra Image 1</label>
+            <input type="text" name="extra_image1" placeholder="images/place1.jpg">
+
+            <label>Extra Image 2</label>
+            <input type="text" name="extra_image2" placeholder="images/place2.jpg">
+
+            <label>Extra Image 3</label>
+            <input type="text" name="extra_image3" placeholder="images/place3.jpg">
 
             <label>Google Map Link</label>
             <input type="text" name="map_link" required>
