@@ -25,5 +25,5 @@ This is a web-based system developed to help users plan one-day visits to touris
 ## Project Demo Video
 
 [![Watch Demo](https://img.youtube.com/vi/wn2XattQYnE/0.jpg)](https://www.youtube.com/watch?v=wn2XattQYnE)
-
+https://youtu.be/wn2XattQYnE?si=OEX7_1IZmMkLZe3z
 This video demonstrates the functionality of the system including browsing places, filtering, and visit planning.
